@@ -55,7 +55,7 @@ class _TodoItemDetailScreenState extends State<TodoItemDetailScreen> {
         title: const Center(child: Text(screenTitle)),
         actions: [
           IconButton(onPressed: () {
-            context.read<AppStateNotifier>().deleteTodoItem(widget.todoObj);
+            context.read<AppStateNotifier>().deleteTodoItem(widget.todoObj, widget.index);
             Navigator.of(context).pop();
           }, icon: const Icon(Icons.delete_outline)),
           IconButton(onPressed: () {

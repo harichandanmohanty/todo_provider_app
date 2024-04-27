@@ -32,7 +32,7 @@ class TodoItemWidget extends StatelessWidget {
             },
             leading: InkWell(
               onTap: () {
-                appStateNotifier.toggleTodoStatus(todoObj);
+                appStateNotifier.toggleTodoStatus(todoObj, index);
               },
               child: todoObj.isCompleted ? const Icon(Icons.check_box_outlined) : const Icon(Icons.check_box_outline_blank),
             ),
@@ -48,7 +48,7 @@ class TodoItemWidget extends StatelessWidget {
             ),
             trailing: InkWell(
               onTap: () {
-                appStateNotifier.deleteTodoItem(todoObj);
+                appStateNotifier.deleteTodoItem(todoObj, index);
               },
               child: const Icon(Icons.delete_outline),
             ),
