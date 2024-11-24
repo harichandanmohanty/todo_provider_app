@@ -16,8 +16,10 @@ class TodoItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: const Color.fromARGB(30, 50, 0, 200), borderRadius: BorderRadius.circular(10)),
-      margin: const EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.black, width: 2),
+        borderRadius: BorderRadius.circular(10)),
+      margin: const EdgeInsets.all(10),
       child: Consumer<AppStateNotifier>(
         builder: (BuildContext context, appStateNotifier, Widget? child) {
           TodoItem todoObj = appStateNotifier.todoList[index];
@@ -39,16 +41,20 @@ class TodoItemWidget extends StatelessWidget {
             title: Text(
               todoObj.title,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(decoration: todoObj.isCompleted ? TextDecoration.lineThrough : TextDecoration.none),
+              style: TextStyle(
+                decoration: todoObj.isCompleted ? TextDecoration.lineThrough : TextDecoration.none,
+                fontSize: 20,
+                fontWeight: FontWeight.bold
+              ),
             ),
-            subtitle: Text(
+            subtitle: todoObj.description.isNotEmpty ? Text(
               todoObj.description,
-              overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.visible,
               style: TextStyle(decoration: todoObj.isCompleted ? TextDecoration.lineThrough : TextDecoration.none),
-            ),
+            ): null,
             trailing: InkWell(
-              onTap: () {
-                appStateNotifier.deleteTodoItem(todoObj);
+              onTap: () async {
+                await appStateNotifier.deleteTodoItem(todoObj);
               },
               child: const Icon(Icons.delete_outline),
             ),

@@ -25,15 +25,16 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const screenTitle = "Create New Todo";
+    const screenTitle = "Create New Task";
     const textStyle = TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.bold,
     );
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Center(child: Text(screenTitle)),
+        title: const Text(screenTitle, style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -46,7 +47,7 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
               controller: textTitleController,
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                hintText: 'Enter a new todo',
+                hintText: 'Enter a new task',
               ),
             ),
             const SizedBox(height: 20),
@@ -64,17 +65,31 @@ class _CreateTodoScreenState extends State<CreateTodoScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (textTitleController.text.isNotEmpty) {
-            final todoItem = TodoItem(title: textTitleController.text, description: textDescController.text);
+            final todoItem = TodoItem(
+              id: context.read<AppStateNotifier>().todoList.isEmpty ? 1: context.read<AppStateNotifier>().todoList.length + 1,
+              title: textTitleController.text,
+              description: textDescController.text,
+            );
             context.read<AppStateNotifier>().createNewTodo(todoItem);
             Navigator.of(context).pop();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Center(child: Text("Title cannot be empty !", style: textStyle,)))
+              const SnackBar(
+                content: Center(
+                  child: Text(
+                    "Title cannot be empty !",
+                    style: textStyle,
+                  ),
+                ),
+              ),
             );
           }
         },
         tooltip: 'Create new todo',
-        child: const Text("ADD", style: textStyle,),
+        child: const Text(
+          "ADD",
+          style: textStyle,
+        ),
       ),
     );
   }

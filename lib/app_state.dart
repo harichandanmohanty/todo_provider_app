@@ -1,6 +1,7 @@
 
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'db.dart';
 import 'models/todo_item_model.dart';
 
 class AppStateNotifier extends ChangeNotifier {
@@ -15,25 +16,38 @@ class AppStateNotifier extends ChangeNotifier {
       notifyListeners();
   }
 
-  void toggleTodoStatus(TodoItem todoObj) {
+  void toggleTodoStatus(TodoItem todoObj) async {
     todoObj.toggleTodoStatus();
+    await editTodoItem(todoObj);
     notifyListeners();
   }
 
   void createNewTodo(TodoItem todoItem) {
+    DbManager.instance.insertDb(todoItem);
     todoList.add(todoItem);
-    print("My todo : $todoList");
+    if (kDebugMode) {
+      print("My todo : $todoList");
+    }
     notifyListeners();
   }
 
-  void deleteTodoItem(TodoItem todoItem) {
-    todoList.remove(todoItem);
+  Future<void> deleteTodoItem(TodoItem todoItem) async{
+    print('deleting ${todoItem.id}');
+    await DbManager.instance.deleteData(todoItem);
+    await readFilterValue();
     notifyListeners();
   }
 
-  void editTodoItem(TodoItem todoItem, int index) {
-    todoList.replaceRange(index, index + 1, [todoItem]);
+  Future<void> editTodoItem(TodoItem todoItem) async {
+    await DbManager.instance.updateDb(todoItem);
+    await readFilterValue();
     notifyListeners();
+  }
+
+  readFilterValue() async {
+    final List<Map> data = await DbManager.instance.readDb();
+    print("Data read $data");
+    todoList = data.map((dataMap) => TodoItem.fromJson(dataMap)).toList();
   }
 
 }

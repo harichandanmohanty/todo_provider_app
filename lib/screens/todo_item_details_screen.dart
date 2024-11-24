@@ -47,16 +47,19 @@ class _TodoItemDetailScreenState extends State<TodoItemDetailScreen> {
     const screenTitle = "Todo Details";
     const textStyle = TextStyle(
       fontSize: 20,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.bold,
     );
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Center(child: Text(screenTitle)),
+        title: const Text(screenTitle, style:  TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),
         actions: [
-          IconButton(onPressed: () {
-            context.read<AppStateNotifier>().deleteTodoItem(widget.todoObj);
-            Navigator.of(context).pop();
+          IconButton(onPressed: () async {
+            await context.read<AppStateNotifier>().deleteTodoItem(widget.todoObj);
+            if(context.mounted) {
+              Navigator.of(context).pop();
+            }
           }, icon: const Icon(Icons.delete_outline)),
           IconButton(onPressed: () {
             toggleEditMode();
@@ -91,8 +94,8 @@ class _TodoItemDetailScreenState extends State<TodoItemDetailScreen> {
       floatingActionButton: isEditEnable ? FloatingActionButton(
         onPressed: () {
           if (textTitleController.text.isNotEmpty && (textTitleController.text != widget.todoObj.title ||  textDescController.text != widget.todoObj.description)) {
-            final todoItem = TodoItem(title: textTitleController.text, description: textDescController.text);
-            context.read<AppStateNotifier>().editTodoItem(todoItem, widget.index);
+            final todoItem = TodoItem(title: textTitleController.text, description: textDescController.text, id: widget.todoObj.id, isCompleted: widget.todoObj.isCompleted);
+            context.read<AppStateNotifier>().editTodoItem(todoItem);
             Navigator.of(context).pop();
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
